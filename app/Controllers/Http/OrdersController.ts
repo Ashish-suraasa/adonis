@@ -6,8 +6,9 @@ export default class OrdersController {
    * POST /order
    * PRIVATE
    */
-  public async CreateOrder({ request, response, auth }) {
+  public async createOrder({ request, response, auth }) {
     const customer = await auth.use('api').authenticate()
     
+
   }
 }

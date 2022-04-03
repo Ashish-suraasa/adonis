@@ -31,7 +31,7 @@ export default class ProductsController {
   public async getProducts({ response, request }) {
     const page: number = request.input('page', 1)
     const limit = 10
-    const products = await Database.query().select('*').from('products').paginate(page, limit)
+    const products = await Product.query().select('*').from('products').paginate(page, limit)
     if (products) {
       response.send(products)
     } else {
@@ -39,7 +39,7 @@ export default class ProductsController {
     }
   }
 
-  /**
+  /**5dt
    * Get a singel product
    * GET /product/:id
    * PUBLIC

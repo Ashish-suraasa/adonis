@@ -15,10 +15,16 @@ export default class CartItem extends BaseModel {
   }
 
   @column()
+  public customer:string
+
+  @column()
   public product: string
 
   @column()
   public quantity: number
+  
+  @column()
+  public isBought: boolean
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

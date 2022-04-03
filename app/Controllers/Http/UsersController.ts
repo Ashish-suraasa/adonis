@@ -50,4 +50,6 @@ export default class UsersController {
       throw new Error('Unable to find User')
     }
   }
+
+  
 }
