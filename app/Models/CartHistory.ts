@@ -2,29 +2,28 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, beforeCreate } from '@ioc:Adonis/Lucid/Orm'
 import { v4 as uuidv4 } from 'uuid'
 
-export default class Product extends BaseModel {
-  public static table = 'products'
+export default class CartHistory extends BaseModel {
+  public static table = 'cart_history'
   public static selfAssignPrimaryKey = true
 
   @column({ isPrimary: true })
   public id: string
 
   @beforeCreate()
-  public static assignUuid(product: Product) {
-    product.id = uuidv4()
+  public static assignUuid(cart_history: CartHistory) {
+    cart_history.id = uuidv4()
   }
 
   @column()
-  public productName: string
+  public customer: string
 
   @column()
-  public stock: number
+  public product: string
 
   @column()
-  public price: number
-
+  public type: string
   @column()
-  public creator: string
+  public quantity: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

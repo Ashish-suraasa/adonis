@@ -1,10 +1,14 @@
 import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
 import { v4 as uuidv4 } from 'uuid'
+import OrderFilter from './Filters/OrderFilter'
+import { compose } from '@ioc:Adonis/Core/Helpers'
+import { Filterable } from '@ioc:Adonis/Addons/LucidFilter'
 
-export default class Order extends BaseModel {
+export default class Order extends compose(BaseModel, Filterable) {
   public static table = 'orders'
   public static selfAssignPrimaryKey = true
+  public static $filter = () => OrderFilter
 
   @column({ isPrimary: true })
   public id: string

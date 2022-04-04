@@ -18,5 +18,8 @@
 |
 */
 
-import './routes/productRoutes'
 import './routes/userRoutes'
+import './routes/productRoutes'
+import './routes/cartRoutes'
+import './routes/adminRoutes'
+import './routes/orderRoutes'

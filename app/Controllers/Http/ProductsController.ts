@@ -1,6 +1,5 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-import Database from '@ioc:Adonis/Lucid/Database'
 import Product from 'App/Models/Product'
 import CreateProduct from 'App/Validators/CreateProductValidator'
 
@@ -10,10 +9,9 @@ export default class ProductsController {
    * POST product
    * PRIVATE ADMIN
    */
-  public async createProduct({ request, response, auth }) {
+  public async createProduct({ request, response }) {
     const payload = await request.validate(CreateProduct)
-    const user = await auth.use('api').authenticate()
-    payload.creator = user.id
+    payload.creator = request.user.id
     const product = new Product()
     await product.fill(payload).save()
     if (product) {
@@ -45,7 +43,7 @@ export default class ProductsController {
    * PUBLIC
    */
   public async getProduct({ response, params }) {
-    const product = await Database.query().select('*').from('products').where('id', params.id)
+    const product = await Product.query().select('*').from('products').where('id', params.id)
     if (product) {
       response.send(product)
     } else {
@@ -59,7 +57,7 @@ export default class ProductsController {
    * PRIVATE ADMIN
    */
   public async deleteProduct({ params, response }) {
-    const product = await Database.query().delete().from('products').where('id', params.id)
+    const product = await Product.query().delete().from('products').where('id', params.id)
 
     if (product) {
       response.send({ message: 'Product Deleted' })

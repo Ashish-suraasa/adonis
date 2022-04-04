@@ -1,23 +1,22 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Database from '@ioc:Adonis/Lucid/Database'
+import generateToken from 'App/Helper/generateToken'
 import User from 'App/Models/User'
 import CreateUser from 'App/Validators/CreateUserValidator'
 import LoginUser from 'App/Validators/LoginUserValidator'
-import Hash from '@ioc:Adonis/Core/Hash'
-
 export default class UsersController {
   /**
    * Use to Login
    */
-  public async login({ auth, request, response }) {
+  public async login({ request, response }) {
     const payload = await request.validate(LoginUser)
 
     try {
-      const user: any = await User.findBy('email', payload.email)
-      const token = await auth.use('api').generate(user, {
-        expiresIn: '7days',
+      const user = await User.findBy('email', payload.email)
+      const token = generateToken(user!.id)
+      response.send({
+        user,
+        token,
       })
-      response.send(token)
     } catch {
       return response.badRequest('Invalid credentials')
     }
@@ -42,14 +41,11 @@ export default class UsersController {
    * GET /user
    * Protected
    */
-  public async getProfile({ response, auth }) {
-    const user = await auth.use('api').authenticate()
-    if (user) {
-      response.send(user)
+  public async getProfile({ response, request }) {
+    if (request.user) {
+      response.send(request.user)
     } else {
       throw new Error('Unable to find User')
     }
   }
-
-  
 }
