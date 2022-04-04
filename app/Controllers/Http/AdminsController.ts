@@ -37,7 +37,7 @@ export default class AdminsController {
   /**
    * Allow admin to get transaction data
    */
-  public async getTransactionData({ request, response }) {
+  public async getTransactionData({ response }) {
     var date = new Date()
 
     //Getting Dates
@@ -83,11 +83,11 @@ export default class AdminsController {
   /**
    * Allow admin to download transaction data
    */
-  public async downloadTransaction({ request, response }) {
-    const user: any = await User.findBy('email', request.body().email)
+  public async downloadTransaction({ response }) {
+    // const user: any = await User.findBy('email', request.body().email)
     const order = await Database.from('orders')
       .select('*')
-      .join('users', 'orders.customer', '=', 'users.id')
+      .join('users', 'orders.customer', '=', 'users.id') 
       .select('*')
 
     if (order) {

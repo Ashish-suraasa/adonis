@@ -17,6 +17,8 @@ export default class AuthJwt {
         const decoded = jwt.verify(token, 'fd') as tokenType
 
         //Setting the request.user as the user
+
+        //TODO: Removed the password field
         request.user = await User.find(decoded.id)
         
         await next()

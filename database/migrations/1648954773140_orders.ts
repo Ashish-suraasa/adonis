@@ -24,3 +24,4 @@ export default class Orders extends BaseSchema {
     this.schema.dropTable(this.tableName)
   }
 }
+

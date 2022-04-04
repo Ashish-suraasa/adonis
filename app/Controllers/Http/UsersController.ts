@@ -5,10 +5,14 @@ import Order from 'App/Models/Order'
 import User from 'App/Models/User'
 import CreateUser from 'App/Validators/CreateUserValidator'
 import LoginUser from 'App/Validators/LoginUserValidator'
+
 export default class UsersController {
   /**
    * Use to Login
    */
+
+  //TODO: Add the password hasing and pawwwrod checking and user check
+
   public async login({ request, response }) {
     const payload = await request.validate(LoginUser)
 
@@ -44,6 +48,8 @@ export default class UsersController {
    * Protected
    */
   public async getProfile({ response, request }) {
+
+    //TODO: Remoce the if condition
     if (request.user) {
       response.send(request.user)
     } else {
