@@ -8,3 +8,4 @@ Route.group(() => {
   Route.post('/createuser', 'AdminsController.createUser')
 })
   .prefix('/admin')
+  .middleware(['auth', 'admin'])
