@@ -53,7 +53,7 @@ export default class CartsController {
    * Remove Cart Item
    * DELETE /cart
    */
-  public async removeCart({ params, response }) {
+  public async removeCartItem({ params, response }) {
     const cartId = params.id
     const cartItem = await CartItem.findByOrFail('id', cartId)
     const cartHistory = new CartHistory()
