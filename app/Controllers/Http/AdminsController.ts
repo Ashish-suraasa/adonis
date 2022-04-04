@@ -53,17 +53,27 @@ export default class AdminsController {
       .select('users.last_name')
       .select('orders.*')
 
-    const firstMonthAmount = await Order.query()
+    const firstMonthquery = await Order.query()
       .select('amount')
       .where('created_at', '>', firstMonth)
 
-    const secondMonthAmount = await Order.query()
+    const secondMonthquery = await Order.query()
       .select('amount')
       .whereIn('created_at', [firstMonth, secondMonth])
 
+    const firstMonthAmount = firstMonthquery.reduce((total, e) => {
+      return total + Number(e.amount)
+    }, 0)
+
+    const secondMonthAmount = secondMonthquery.reduce((total, e) => {
+      return total + Number(e.amount)
+    }, 0)
+
+    const d = firstMonthAmount - secondMonthAmount
+
     if (order) {
       response.send({
-        firstMonthAmount,
+        d,
       })
     } else {
       throw new Error('No Transaction found for the following user')
