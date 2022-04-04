@@ -38,14 +38,12 @@ export default class AdminsController {
    * Allow admin to get transaction data
    */
   public async getTransactionData({ request, response }) {
-    const user: any = await User.findBy('email', request.body().email)
     var date = new Date()
 
     //Getting Dates
     const firstMonth = new Date(date.setMonth(date.getMonth() - 1)).toDateString()
     const secondMonth = new Date(date.setMonth(date.getMonth() - 1)).toDateString()
 
-    //Get all the order from the last month
     const order = await Database.from('orders')
       .join('users', 'orders.customer', '=', 'users.id')
       .select('users.email')
@@ -73,7 +71,9 @@ export default class AdminsController {
 
     if (order) {
       response.send({
-        Change: d,
+        thisMonthTotal: firstMonthAmount,
+        lastMonthTotal: secondMonthAmount,
+        totalChange: d,
         order,
       })
     } else {

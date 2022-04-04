@@ -92,7 +92,9 @@ export default class UsersController {
 
     if (order) {
       response.send({
-        Change: d,
+        thisMonthTotal: firstMonthAmount,
+        lastMonthTotal: secondMonthAmount,
+        totalChange: d,
         order,
       })
     } else {
