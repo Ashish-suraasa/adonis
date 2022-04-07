@@ -23,7 +23,8 @@
     "@adonisjs/core",
     "@adonisjs/lucid",
     "@adonisjs/auth",
-    "adonis-lucid-filter"
+    "adonis-lucid-filter",
+    "adonis5-jwt"
   ],
   "aceProviders": [
     "@adonisjs/repl"

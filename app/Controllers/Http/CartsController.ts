@@ -3,6 +3,8 @@
 import CartHistory from 'App/Models/CartHistory'
 import CartItem from 'App/Models/CartItem'
 import CreateCartItem from 'App/Validators/CreateCartItemValidator'
+import { RequestContract } from '@ioc:Adonis/Core/Request'
+import { ResponseContract } from '@ioc:Adonis/Core/Response'
 
 export default class CartsController {
   /**
@@ -10,10 +12,10 @@ export default class CartsController {
    * POST /cart
    * PRIVATE
    */
-  public async addCartItem({ request, response }) {
+  public async addCartItem(request: RequestContract, response: ResponseContract): Promise<void> {
     const payload = await request.validate(CreateCartItem)
     const cartHistory = new CartHistory()
-    payload.customer = request.user.id
+    payload.customer = ''
     const cartItem = new CartItem()
     await cartItem.fill(payload).save()
     await cartHistory
@@ -36,12 +38,10 @@ export default class CartsController {
    * GET /cart
    * PRIVATE
    */
-  public async getCartItems({ request, response }) {
+  public async getCartItems(request: RequestContract, response: ResponseContract): Promise<void> {
     const page: number = request.input('page', 1)
     const limit = 10
-    const cartItems = await CartItem.query()
-      .where('customer', request.user.id)
-      .paginate(page, limit)
+    const cartItems = await CartItem.query().where('customer', '').paginate(page, limit)
     if (cartItems) {
       response.send(cartItems)
     } else {
@@ -53,7 +53,11 @@ export default class CartsController {
    * Remove Cart Item
    * DELETE /cart
    */
-  public async removeCartItem({ params, response }) {
+  public async removeCartItem(
+    request: RequestContract,
+    response: ResponseContract,
+    params: Record<string, any>
+  ): Promise<void> {
     const cartId = params.id
     const cartItem = await CartItem.findByOrFail('id', cartId)
     const cartHistory = new CartHistory()

@@ -6,8 +6,8 @@ export default class CreateCartItemValidator {
 
   public schema = schema.create({
     product: schema.string(),
-    quantity: schema.number()
-    
+    quantity: schema.number(),
+    customer: schema.string({}),
   })
 
   public messages = {

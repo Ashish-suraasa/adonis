@@ -10,9 +10,11 @@ export default class CreateUserValidator {
 
     //TODO: CHeck the password escape:true
     //TODO: Take confirm password
-    password: schema.string({ escape: true }),
+    password: schema.string({ trim: true }),
+    confirmPassword: schema.string({ trim: true }),
     address: schema.string({ trim: true }),
   })
+
 
   public messages = {
     'required': 'The {{ field }} is required to register',

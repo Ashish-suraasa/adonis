@@ -2,6 +2,8 @@
 
 import Product from 'App/Models/Product'
 import CreateProduct from 'App/Validators/CreateProductValidator'
+import { RequestContract } from '@ioc:Adonis/Core/Request'
+import { ResponseContract } from '@ioc:Adonis/Core/Response'
 
 export default class ProductsController {
   /**
@@ -9,9 +11,9 @@ export default class ProductsController {
    * POST product
    * PRIVATE ADMIN
    */
-  public async createProduct({ request, response }) {
+  public async createProduct(request: RequestContract, response: ResponseContract): Promise<void> {
     const payload = await request.validate(CreateProduct)
-    payload.creator = request.user.id
+
     const product = new Product()
     await product.fill(payload).save()
     if (product) {
@@ -26,7 +28,7 @@ export default class ProductsController {
    * Get /product
    * PUBLIC
    */
-  public async getProducts({ response, request }) {
+  public async getProducts(request: RequestContract, response: ResponseContract): Promise<void> {
     const page: number = request.input('page', 1)
     const limit = 10
     const products = await Product.query().select('*').from('products').paginate(page, limit)
@@ -42,7 +44,11 @@ export default class ProductsController {
    * GET /product/:id
    * PUBLIC
    */
-  public async getProduct({ response, params }) {
+  public async getProduct(
+    request: RequestContract,
+    response: ResponseContract,
+    params: Record<string, any>
+  ): Promise<void> {
     const product = await Product.query().select('*').from('products').where('id', params.id)
     if (product) {
       response.send(product)
@@ -56,7 +62,11 @@ export default class ProductsController {
    * DELETE /product/:id
    * PRIVATE ADMIN
    */
-  public async deleteProduct({ params, response }) {
+  public async deleteProduct(
+    request: RequestContract,
+    response: ResponseContract,
+    params: Record<string, any>
+  ): Promise<void> {
     const product = await Product.query().delete().from('products').where('id', params.id)
 
     if (product) {
@@ -71,7 +81,7 @@ export default class ProductsController {
    * put /product/:id
    * PRIVATE ADMIN
    */
-  public updateProduct({ response }) {
+  public updateProduct({ response }): void {
     response.send('UPdate PRodct')
   }
 }

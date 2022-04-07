@@ -22,6 +22,7 @@ export default class CartHistory extends BaseModel {
 
   @column()
   public type: string
+  
   @column()
   public quantity: number
 

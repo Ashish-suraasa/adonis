@@ -22,7 +22,7 @@ export default class Product extends BaseModel {
 
   @column()
   public price: number
-
+  //TODO: Add relatinship
   @column()
   public creator: string
 

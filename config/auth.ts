@@ -6,6 +6,7 @@
  */
 
 import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
+import Env from "@ioc:Adonis/Core/Env";
 
 /*
 |--------------------------------------------------------------------------
@@ -16,25 +17,26 @@ import { AuthConfig } from '@ioc:Adonis/Addons/Auth'
 | inside the `contracts/auth.ts` file before mentioning them here.
 |
 */
-const authConfig: AuthConfig = {
-  guard: 'api',
-  guards: {
-    api: {
-      driver: 'oat',
 
+const authConfig: AuthConfig = {
+  guard: 'jwt',
+  guards: {
+    jwt: {
+      driver: "jwt",
+      publicKey: Env.get('JWT_PUBLIC_KEY', '').replace(/\\n/g, '\n'),
+      privateKey: Env.get('JWT_PRIVATE_KEY', '').replace(/\\n/g, '\n'),
       tokenProvider: {
         type: 'api',
         driver: 'database',
-        table: 'api_tokens',
-        foreignKey: 'user_id',
+        table: 'jwt_tokens',
+        foreignKey: 'user_id'
       },
-
       provider: {
-        driver: 'lucid',
-        identifierKey: 'id',
-        uids: ['email'],
-        model: () => import('App/Models/User'),
-      },
+        driver: "lucid",
+        identifierKey: "id",
+        uids: [],
+        model: () => import('App/Models/User')
+      }
     },
   },
 }

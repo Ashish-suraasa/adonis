@@ -3,6 +3,8 @@
 import Database from '@ioc:Adonis/Lucid/Database'
 import Order from 'App/Models/Order'
 import { v4 as uuidv4 } from 'uuid'
+ import { RequestContract } from '@ioc:Adonis/Core/Request'
+ import { ResponseContract } from '@ioc:Adonis/Core/Response'
 
 export default class OrdersController {
   /**
@@ -10,10 +12,10 @@ export default class OrdersController {
    * POST /order
    * PRIVATE
    */
-  public async createOrder({ response, request }) {
+  public async createOrder(request: RequestContract, response: ResponseContract): Promise<void> {
     const x = await Database.rawQuery(
       'select sum(products.price*cart_items.quantity) as total from cart_items inner join products on cart_items.product = products.id where customer = ? AND is_bought = false;',
-      [request.user.id]
+      ['']
     )
 
     if (!x.rows[0].total) {
@@ -24,9 +26,9 @@ export default class OrdersController {
     const d = new Date().toDateString()
     const orderid = await trx.insertQuery().table('orders').returning('id').insert({
       id: uuidv4(),
-      customer: request.user.id,
+      customer: 'request.user.id',
       amount: x.rows[0].total,
-      address: request.user.address,
+      address: 'request.user.address',
       is_delivered: false,
       is_paid: false,
       created_at: d,
@@ -37,7 +39,7 @@ export default class OrdersController {
       .query()
       .select('*')
       .from('cart_items')
-      .whereIn(['is_bought', 'customer'], [[false, request.user.id]])
+      .whereIn(['is_bought', 'customer'], [[false, 'request.user.id']])
 
     const mappingPayload: any[] = []
     cart_items.map((e: any) => {
@@ -70,12 +72,12 @@ export default class OrdersController {
    * GET /order
    * PRIVATE
    */
-  public async getOrder({ response, request }) {
+  public async getOrder(request: RequestContract, response: ResponseContract): Promise<void> {
     const page: number = request.input('page', 1)
     const limit = 10
     const order = await Order.query()
       .select('*')
-      .where('customer', request.user.id)
+      .where('customer',' request.user.id')
       .paginate(page, limit)
     if (order) {
       response.send(order)

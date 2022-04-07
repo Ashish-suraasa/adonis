@@ -5,7 +5,6 @@ Route.group(() => {
   Route.post('/', 'ProductsController.createProduct')
 })
   .prefix('/product')
-  .middleware('auth')
 
 Route.group(() => {
   Route.get('/', 'ProductsController.getProduct')
@@ -13,4 +12,3 @@ Route.group(() => {
   Route.delete('/', 'ProductsController.deleteProduct')
 })
   .prefix('/product/:id')
-  .middleware('auth')

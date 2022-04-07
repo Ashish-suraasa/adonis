@@ -10,4 +10,3 @@ Route.group(() => {
   Route.get('/getTransactionData', 'UsersController.getTransactionData')
 })
   .prefix('/user')
-  .middleware('auth')

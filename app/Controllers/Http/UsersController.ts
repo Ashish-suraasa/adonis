@@ -1,42 +1,48 @@
 // import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Hash from '@ioc:Adonis/Core/Hash'
 import Database from '@ioc:Adonis/Lucid/Database'
-import generateToken from 'App/Helper/generateToken'
 import Order from 'App/Models/Order'
 import User from 'App/Models/User'
 import CreateUser from 'App/Validators/CreateUserValidator'
 import LoginUser from 'App/Validators/LoginUserValidator'
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class UsersController {
   /**
    * Use to Login
    */
 
-  //TODO: Add the password hasing and pawwwrod checking and user check
-
-  public async login({ request, response }) {
+  public async login({ request, response }: HttpContextContract): Promise<void> {
     const payload = await request.validate(LoginUser)
 
-    try {
-      const user = await User.findBy('email', payload.email)
-      const token = generateToken(user!.id)
+    const user = await User.findBy('email', payload.email)
+
+    if (await Hash.verify(user!.password, payload.password)) {
       response.send({
-        user,
-        token,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
+        address: user?.address,
       })
-    } catch {
-      return response.badRequest('Invalid credentials')
+    } else {
+      throw new Error('Invalid Credentials')
     }
   }
 
   /**
    * Use to register
    */
-  public async register({ request, response }) {
+  public async register({ request, response }: HttpContextContract): Promise<void> {
     const payload = await request.validate(CreateUser)
     const user = new User()
     await user.fill(payload).save()
-    if (user) {
-      response.send(payload)
+    if (user.$isPersisted) {
+      response.send({
+        firstName: payload?.firstName,
+        lastName: payload?.lastName,
+        email: payload?.email,
+        address: payload?.address,
+      })
     } else {
       throw new Error('Unable to Register')
     }
@@ -47,11 +53,15 @@ export default class UsersController {
    * GET /user
    * Protected
    */
-  public async getProfile({ response, request }) {
-
-    //TODO: Remoce the if condition
-    if (request.user) {
-      response.send(request.user)
+  public async getProfile({ request, response }: HttpContextContract): Promise<void> {
+    const user = await User.findBy('email', '')
+    if (user) {
+      response.send({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        addresss: user.address,
+      })
     } else {
       throw new Error('Unable to find User')
     }
@@ -60,7 +70,7 @@ export default class UsersController {
   /**
    * Allow User to get transaction data
    */
-  public async getTransactionData({ request, response }) {
+  public async getTransactionData({ request, response }: HttpContextContract): Promise<void> {
     var date = new Date()
 
     //Getting Dates
@@ -74,16 +84,16 @@ export default class UsersController {
       .select('users.first_name')
       .select('users.last_name')
       .select('orders.*')
-      .where('orders.customer', request.user.id)
+      .where('orders.customer', '')
 
     const firstMonthquery = await Order.query()
       .select('amount')
-      .where('orders.customer', request.user.id)
+      .where('orders.customer', '')
       .where('created_at', '>', firstMonth)
 
     const secondMonthquery = await Order.query()
       .select('amount')
-      .where('orders.customer', request.user.id)
+      .where('orders.customer', '')
       .whereIn('created_at', [firstMonth, secondMonth])
 
     const firstMonthAmount = firstMonthquery.reduce((total, e) => {

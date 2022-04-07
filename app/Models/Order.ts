@@ -1,14 +1,11 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import { v4 as uuidv4 } from 'uuid'
-import OrderFilter from './Filters/OrderFilter'
-import { compose } from '@ioc:Adonis/Core/Helpers'
-import { Filterable } from '@ioc:Adonis/Addons/LucidFilter'
+import OrderCartItemMapping from './OrderCartMapping'
 
-export default class Order extends compose(BaseModel, Filterable) {
+export default class Order extends BaseModel {
   public static table = 'orders'
   public static selfAssignPrimaryKey = true
-  public static $filter = () => OrderFilter
 
   @column({ isPrimary: true })
   public id: string
@@ -18,19 +15,19 @@ export default class Order extends compose(BaseModel, Filterable) {
     order.id = uuidv4()
   }
 
-  @column({ isPrimary: true })
+  @column({})
   public customer: string
 
-  @column({ isPrimary: true })
+  @column({})
   public amount: number
 
-  @column({ isPrimary: true })
+  @column({})
   public address: string
 
-  @column({ isPrimary: true })
+  @column({})
   public isDelivered: boolean
 
-  @column({ isPrimary: true })
+  @column({})
   public isPaid: boolean
 
   @column.dateTime({ autoCreate: true })

@@ -6,4 +6,3 @@ Route.group(() => {
   Route.delete('/:id', 'CartsController.removeCartItem')
 })
   .prefix('/cart')
-  .middleware('auth')
